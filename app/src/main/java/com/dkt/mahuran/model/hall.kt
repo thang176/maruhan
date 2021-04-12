@@ -17,9 +17,9 @@ data class HallItem(
         @SerializedName("add")
         val address: String,
         @SerializedName("lat")
-        val lat: Long,
+        val lat: Double,
         @SerializedName("long")
-        val lng: Long,
+        val lng: Double,
         @SerializedName("machine_invisibled")
         val machineInvisibled: Int
 )
