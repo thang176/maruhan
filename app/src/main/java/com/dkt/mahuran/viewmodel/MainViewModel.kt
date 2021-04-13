@@ -3,6 +3,7 @@ package com.dkt.mahuran.viewmodel
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dkt.mahuran.data.local.dao.HallDao
 import com.dkt.mahuran.data.local.entity.HallEntity
@@ -16,25 +17,37 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val apiService: ApiService, val hallDao: HallDao) :
-    ViewModel() {
+class MainViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val hallDao: HallDao
+) : ViewModel() {
+
+    var checkProgressBar: MutableLiveData<Int> = MutableLiveData()
 
     @FlowPreview
     fun getMachineInfo(prg: ProgressBar) {
         CoroutineScope(Dispatchers.IO).launch {
-            prg.visibility = View.VISIBLE
             var count = 0
 
             listRegion.asFlow()
                 .flatMapMerge {
                     val result = apiService.getHall(it).body()
                     val listHallModel = result?.halls ?: listOf()
+                    if (listHallModel.isNotEmpty()) {
+                        for (item in listHallModel) {
+                            val code = hallDao.getHallCode(item.code)
+                            if (code.isNullOrEmpty()) {
+                                val entity = convertModelToEntity(item)
+                                hallDao.insertAll(entity)
+                            }
+                        }
+                    }
                     listHallModel.asFlow()
                 }.onCompletion {
                     prg.visibility = View.INVISIBLE
-                    if(it != null){
-                        val exception = it as Throwable
-
+                    if (it != null) {
+                        val throwable = it
+                        throwable.message?.let { it1 -> Log.d("Err", it1) }
                     }
                 }
 //                .flatMapMerge { hallModel ->
@@ -65,16 +78,11 @@ class MainViewModel @Inject constructor(val apiService: ApiService, val hallDao:
                 .collect {
                     count++
                     println(count)
-                    val code = hallDao.getHallCode(it.code)
-                    if (code.isNullOrEmpty()) {
-                        val entity = convertModelToEntity(it)
-                        hallDao.insertAll(entity)
-                    }
                 }
         }
     }
 
-    fun convertModelToEntity(hallItem: HallItem): HallEntity {
+    private fun convertModelToEntity(hallItem: HallItem): HallEntity {
         val id = UUID.randomUUID().toString()
         return HallEntity(
             id,

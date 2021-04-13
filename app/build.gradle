@@ -59,12 +59,12 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
-    implementation "com.squareup.okhttp3:logging-interceptor:3.12.0"
-
     implementation "androidx.room:room-runtime:2.2.6"
     kapt "androidx.room:room-compiler:2.2.6"
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:2.2.6"
+
+    implementation "com.squareup.okhttp3:logging-interceptor:3.12.0"
 
 }
