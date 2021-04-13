@@ -24,26 +24,28 @@ data class ChillHalls(
 
 data class Light(
         @SerializedName("group_count")
-        val groupCount: Int
+        val groupCount: Int,
+        @SerializedName("groups")
+        val groups: List<GroupMachineItem>
 )
 
 data class FourYen(
         @SerializedName("group_count")
         val groupCount: Int,
         @SerializedName("groups")
-        val groups: List<FourYenGroup>
+        val groups: List<GroupMachineItem>
 )
 
-data class FourYenGroup(
+data class GroupMachineItem(
         @SerializedName("group_name")
         val groupName: String,
         @SerializedName("count")
         val count: Int,
         @SerializedName("machines")
-        val machines: List<FourYenGroupMachines>
+        val machines: List<MachinesItem>
 )
 
-data class FourYenGroupMachines(
+data class MachinesItem(
         @SerializedName("machine_number")
         val machineNumber: String,
         @SerializedName("machine_id")
