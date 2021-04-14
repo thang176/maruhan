@@ -2,6 +2,8 @@ package com.dkt.mahuran.di
 
 import com.dkt.mahuran.data.local.MaruhanDatabase
 import com.dkt.mahuran.data.local.dao.HallDao
+import com.dkt.mahuran.data.local.dao.MachineDao
+import com.dkt.mahuran.data.local.dao.ModelDao
 import com.dkt.mahuran.data.remote.ApiService
 import dagger.Module
 import dagger.Provides
@@ -22,5 +24,15 @@ class MainModule {
     @Provides
     fun provideHallDao(maruhanDatabase: MaruhanDatabase): HallDao{
         return maruhanDatabase.hallDao()
+    }
+
+    @Provides
+    fun provideModelDao(maruhanDatabase: MaruhanDatabase): ModelDao{
+        return maruhanDatabase.modelDao()
+    }
+
+    @Provides
+    fun provideMachineDao(maruhanDatabase: MaruhanDatabase): MachineDao{
+        return maruhanDatabase.machineDao()
     }
 }
